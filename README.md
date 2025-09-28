@@ -349,4 +349,4 @@ pm2 monit               # Monitorear recursos
 
 ---
 
-**¿Necesitas ayuda?** Abre un issue en el repositorio o contacta al equipo de desarrollo.
+**¿Necesitas ayuda?** Abre un issue en el repositorio o contactame.
