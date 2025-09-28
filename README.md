@@ -33,30 +33,36 @@ src/
 
 ## 🛠️ Instalación
 
+### Desarrollo Local
+
 1. **Clonar el repositorio**
+
    ```bash
    git clone <repository-url>
    cd nestjs-crud-api
    ```
 
 2. **Instalar dependencias**
+
    ```bash
    npm install
    ```
 
 3. **Configurar variables de entorno**
+
    ```bash
    cp env.example .env
    ```
-   
+
    Editar el archivo `.env` con tus configuraciones:
+
    ```env
    NODE_ENV=development
-   PORT=3000
+   PORT=3001
    DB_HOST=localhost
    DB_PORT=5432
    DB_USERNAME=postgres
-   DB_PASSWORD=password
+   DB_PASSWORD=admin
    DB_DATABASE=nestjs_crud_api
    JWT_SECRET=your-super-secret-jwt-key
    ```
@@ -66,14 +72,86 @@ src/
    - Crear la base de datos `nestjs_crud_api`
    - Las tablas se crearán automáticamente en modo desarrollo
 
+### 🚀 Deployment en Producción (Ubuntu)
+
+Para desplegar en un servidor Ubuntu con RDS y EC2:
+
+1. **Conectar a tu instancia EC2**
+
+   ```bash
+   ssh -i your-key.pem ubuntu@your-ec2-ip
+   ```
+
+2. **Clonar el repositorio**
+
+   ```bash
+   git clone <repository-url>
+   cd nestjs-crud-api
+   ```
+
+3. **Ejecutar el script de deployment**
+
+   ```bash
+   chmod +x deploy.sh
+   ./deploy.sh
+   ```
+
+4. **Configurar variables de entorno para producción**
+
+   ```bash
+   cp env.production .env
+   ```
+
+   Editar el archivo `.env` con tus configuraciones de RDS:
+
+   ```env
+   NODE_ENV=production
+   PORT=3001
+   DB_HOST=your-rds-endpoint.amazonaws.com
+   DB_PORT=5432
+   DB_USERNAME=postgres
+   DB_PASSWORD=your-secure-password
+   DB_DATABASE=nestjs_crud_api
+   JWT_SECRET=your-super-secure-jwt-secret
+   ```
+
+5. **Reiniciar la aplicación**
+   ```bash
+   pm2 restart nestjs-crud-api
+   ```
+
+### 📋 Comandos de PM2
+
+```bash
+# Ver estado de la aplicación
+pm2 status
+
+# Ver logs en tiempo real
+pm2 logs nestjs-crud-api
+
+# Reiniciar aplicación
+pm2 restart nestjs-crud-api
+
+# Detener aplicación
+pm2 stop nestjs-crud-api
+
+# Eliminar aplicación
+pm2 delete nestjs-crud-api
+
+# Monitorear recursos
+pm2 monit
+```
+
 ## 🚀 Ejecución
 
 ### Desarrollo
+
 ```bash
 npm run start:dev
 ```
 
 ### Producción
+
 ```bash
 npm run build
 npm run start:prod
@@ -82,6 +160,7 @@ npm run start:prod
 ## 📚 Documentación API
 
 Una vez que la aplicación esté ejecutándose, puedes acceder a la documentación de Swagger en:
+
 - **URL**: http://localhost:3000/api/docs
 
 ## 🧪 Testing
@@ -122,9 +201,11 @@ npm run test:e2e
 ## 📋 Endpoints Disponibles
 
 ### Autenticación
+
 - `POST /api/v1/auth/login` - Iniciar sesión
 
 ### Usuarios
+
 - `GET /api/v1/users` - Obtener todos los usuarios
 - `GET /api/v1/users/:id` - Obtener usuario por ID
 - `POST /api/v1/users` - Crear nuevo usuario
