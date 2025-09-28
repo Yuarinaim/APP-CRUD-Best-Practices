@@ -156,7 +156,6 @@ Aquí podrás:
 - `PATCH /api/coupons/update/:id` - Actualizar cupón
 - `DELETE /api/coupons/delete/:id` - Eliminar cupón
 - `POST /api/coupons/redeem` - Canjear cupón
-- `PATCH /api/coupons/mark-redeemed` - Marcar cupón como canjeado
 
 ## 🧪 Testing
 
