@@ -23,6 +23,10 @@ export class User extends ModelEntity {
   @Column({ type: 'varchar', length: 255 })
   password: string;
 
+  @ApiProperty({ description: 'Rol del usuario' })
+  @Column({ type: 'varchar', length: 255, default: 'user' })
+  role: string;
+
   @ApiProperty({ description: 'Estado activo del usuario' })
   @Column({ type: 'boolean', default: true })
   isActive: boolean;

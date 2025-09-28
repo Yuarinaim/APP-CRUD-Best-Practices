@@ -19,7 +19,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findByEmail(email.toLowerCase());
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const { password, ...result } = user;
@@ -38,6 +38,7 @@ export class AuthService {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
         isActive: user.isActive,
       },
     };
@@ -47,7 +48,7 @@ export class AuthService {
     registerDto: RegisterDto,
   ): Promise<{ message: string; user: Partial<User> }> {
     // Verificar si el email ya existe
-    const existingUser = await this.usersService.findByEmail(registerDto.email);
+    const existingUser = await this.usersService.findByEmail(registerDto.email.toLowerCase());
 
     if (existingUser) {
       throw new ConflictException('El email ya está registrado');

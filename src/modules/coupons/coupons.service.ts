@@ -128,7 +128,7 @@ export class CouponsService {
 
     // Marcar como canjeado
     coupon.redeemedAt = now;
-    coupon.state = CouponState.INACTIVE;
+    coupon.state = CouponState.REDEEMED;
 
     await this.couponRepository.save(coupon);
 

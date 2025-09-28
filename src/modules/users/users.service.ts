@@ -18,9 +18,12 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+    // Normalizar email a lowercase
+    const normalizedEmail = createUserDto.email.toLowerCase();
+
     // Verificar si el email ya existe
     const existingUser = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
+      where: { email: normalizedEmail },
       withDeleted: true,
     });
 
@@ -28,13 +31,19 @@ export class UsersService {
       throw new ConflictException('El email ya está en uso');
     }
 
+    // Verificar si es el primer usuario para asignar rol de administrador
+    const userCount = await this.userRepository.count();
+    const role = userCount === 0 ? 'admin' : 'user';
+
     // Encriptar la contraseña
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
     // Crear el usuario
     const user = this.userRepository.create({
       ...createUserDto,
+      email: normalizedEmail,
       password: hashedPassword,
+      role,
     });
 
     return await this.userRepository.save(user);
@@ -42,14 +51,14 @@ export class UsersService {
 
   async findAll(): Promise<User[]> {
     return await this.userRepository.find({
-      // select: ['id', 'name', 'email', 'isActive', 'createdAt', 'updatedAt'],
+      select: ['id', 'name', 'email', 'role', 'isActive', 'created_at', 'updated_at'],
     });
   }
 
   async findOne(id: string): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
-      // select: ['id', 'name', 'email', 'isActive', 'created_at', 'updated_at'],
+      select: ['id', 'name', 'email', 'role', 'isActive', 'created_at', 'updated_at'],
     });
 
     if (!user) {
@@ -64,14 +73,18 @@ export class UsersService {
 
     // Si se está actualizando el email, verificar que no esté en uso
     if (updateUserDto.email && updateUserDto.email !== user.email) {
+      const normalizedEmail = updateUserDto.email.toLowerCase();
       const existingUser = await this.userRepository.findOne({
-        where: { email: updateUserDto.email },
+        where: { email: normalizedEmail },
         withDeleted: true,
       });
 
       if (existingUser) {
         throw new ConflictException('El email ya está en uso');
       }
+
+      // Actualizar el email normalizado
+      updateUserDto.email = normalizedEmail;
     }
 
     // Si se está actualizando la contraseña, encriptarla
@@ -92,7 +105,7 @@ export class UsersService {
 
   async findByEmail(email: string): Promise<User | null> {
     return await this.userRepository.findOne({
-      where: { email },
+      where: { email: email.toLowerCase() },
     });
   }
 }
